@@ -123,4 +123,43 @@ void main() {
     await tester.tap(promoChip);
     await tester.pumpAndSettle();
   });
+
+  testWidgets('Laundry Kilat - Fase 4: Pengaturan Usaha, Layanan Harga, Karyawan & Akun', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const LaundryKilatApp());
+    await tester.pumpAndSettle();
+
+    // Navigasi ke tab 'Pengaturan'
+    await tester.tap(find.text('Pengaturan'));
+    await tester.pumpAndSettle();
+
+    // Verifikasi Akun Pengelola (FR-7.1, FR-7.2, FR-7.3)
+    expect(find.text('Ibu Nurhayati (Pemilik)'), findsOneWidget);
+    expect(find.text('Ubah Kata Sandi'), findsOneWidget);
+    expect(find.text('Keluar'), findsOneWidget);
+
+    // Verifikasi Profil Usaha (FR-6.1)
+    expect(find.text('Profil Usaha (FR-6.1)'), findsOneWidget);
+    expect(find.text('Laundry Kilat Sleman'), findsOneWidget);
+
+    // Verifikasi Layanan & Harga (FR-6.2)
+    expect(find.text('Layanan & Harga / kg (FR-6.2)'), findsOneWidget);
+    expect(find.text('Cuci Setrika Reguler'), findsOneWidget);
+
+    // Verifikasi Karyawan (FR-6.3)
+    expect(find.text('Kelola Karyawan (FR-6.3)'), findsOneWidget);
+    expect(find.text('Agus Purnomo'), findsOneWidget);
+
+    // Uji buka dialog Ubah Kata Sandi (FR-7.3)
+    await tester.tap(find.text('Ubah Kata Sandi'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kata Sandi Lama *'), findsOneWidget);
+    expect(find.text('Kata Sandi Baru *'), findsOneWidget);
+    await tester.tap(find.text('Batal'));
+    await tester.pumpAndSettle();
+  });
 }

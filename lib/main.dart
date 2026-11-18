@@ -4,10 +4,12 @@ import 'services/local_data_service.dart';
 import 'repositories/jadwal_repository.dart';
 import 'repositories/cucian_repository.dart';
 import 'repositories/info_repository.dart';
+import 'repositories/pengaturan_repository.dart';
 import 'viewmodels/beranda_vm.dart';
 import 'viewmodels/jadwal_vm.dart';
 import 'viewmodels/checklist_vm.dart';
 import 'viewmodels/info_vm.dart';
+import 'viewmodels/pengaturan_vm.dart';
 import 'views/pages/main_navigation_page.dart';
 
 void main() {
@@ -43,6 +45,10 @@ class LaundryKilatApp extends StatelessWidget {
           create: (ctx) => InfoRepository(ctx.read<LocalDataService>()),
           update: (ctx, service, prev) => prev ?? InfoRepository(service),
         ),
+        ChangeNotifierProxyProvider<LocalDataService, PengaturanRepository>(
+          create: (ctx) => PengaturanRepository(ctx.read<LocalDataService>()),
+          update: (ctx, service, prev) => prev ?? PengaturanRepository(service),
+        ),
 
         // 3. Lapisan ViewModel (State layar & logika tampilan)
         ChangeNotifierProxyProvider2<JadwalRepository, CucianRepository, BerandaViewModel>(
@@ -77,6 +83,13 @@ class LaundryKilatApp extends StatelessWidget {
           ),
           update: (ctx, repo, prev) =>
               prev ?? InfoViewModel(repository: repo),
+        ),
+        ChangeNotifierProxyProvider<PengaturanRepository, PengaturanViewModel>(
+          create: (ctx) => PengaturanViewModel(
+            repository: ctx.read<PengaturanRepository>(),
+          ),
+          update: (ctx, repo, prev) =>
+              prev ?? PengaturanViewModel(repository: repo),
         ),
       ],
       child: MaterialApp(
