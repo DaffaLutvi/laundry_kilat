@@ -8,6 +8,7 @@ class JadwalCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final bool showActions;
+  final bool showHari;
 
   const JadwalCard({
     super.key,
@@ -15,6 +16,7 @@ class JadwalCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.showActions = false,
+    this.showHari = false,
   });
 
   @override
@@ -59,7 +61,7 @@ class JadwalCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Badge Jam
+            // Badge Jam & Hari
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
@@ -83,6 +85,17 @@ class JadwalCard extends StatelessWidget {
                       color: colorScheme.onPrimaryContainer,
                     ),
                   ),
+                  if (showHari) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      jadwal.hari,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onPrimaryContainer.withAlpha(200),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

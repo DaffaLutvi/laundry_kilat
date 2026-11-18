@@ -42,6 +42,15 @@ class JadwalViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refresh() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> addJadwal(JadwalLaundry item) async {
     _isLoading = true;
     _errorMessage = null;
