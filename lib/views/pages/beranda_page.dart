@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../utils/date_helper.dart';
 import '../../viewmodels/beranda_vm.dart';
+import '../../viewmodels/pengaturan_vm.dart';
 import '../widgets/jadwal_card.dart';
 import '../widgets/cucian_tile.dart';
+import '../widgets/empty_state_widget.dart';
 
 /// Lapisan View: Layar Beranda Hari Ini (Fase 1).
 /// Menampilkan:
@@ -18,12 +21,35 @@ class BerandaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final namaUsaha = context
+        .watch<PengaturanViewModel>()
+        .profilUsaha
+        .namaUsaha;
+    final jam = DateTime.now().hour;
+    final sapaan = jam < 11
+        ? 'Selamat pagi'
+        : jam < 15
+        ? 'Selamat siang'
+        : jam < 18
+        ? 'Selamat sore'
+        : 'Selamat malam';
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 92,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              '$sapaan, $namaUsaha',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             Row(
               children: [
                 Icon(
@@ -42,8 +68,11 @@ class BerandaPage extends StatelessWidget {
             ),
             Text(
               DateHelper.getTanggalLengkap(DateTime.now()),
-              style: theme.textTheme.labelMedium?.copyWith(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
+                fontSize: 10,
               ),
             ),
           ],
@@ -61,9 +90,7 @@ class BerandaPage extends StatelessWidget {
       body: Consumer<BerandaViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (vm.errorMessage != null) {
@@ -73,7 +100,11 @@ class BerandaPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: colorScheme.error,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       vm.errorMessage!,
@@ -95,7 +126,7 @@ class BerandaPage extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: vm.refresh,
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.all(16),
               children: [
                 // 1. KARTU RINGKASAN SELESAI (FR-1.3)
                 _buildRingkasanCard(context, vm),
@@ -134,11 +165,9 @@ class BerandaPage extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colorScheme.primary.withAlpha(60),
-        ),
+        border: Border.all(color: colorScheme.primary.withAlpha(60)),
       ),
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -179,7 +208,10 @@ class BerandaPage extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -283,11 +315,7 @@ class BerandaPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
-              Icons.schedule_rounded,
-              size: 20,
-              color: colorScheme.primary,
-            ),
+            Icon(Icons.schedule_rounded, size: 20, color: colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               'Jadwal Hari Ini',
@@ -324,38 +352,14 @@ class BerandaPage extends StatelessWidget {
         const SizedBox(height: 8),
 
         if (list.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: colorScheme.outlineVariant.withAlpha(100)),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.event_available_outlined,
-                  size: 36,
-                  color: colorScheme.onSurfaceVariant.withAlpha(140),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Tidak ada jadwal antar-jemput untuk hari ini.',
-                  style: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
+          const EmptyStateWidget(
+            icon: Icons.event_available_outlined,
+            title: 'Jadwal masih kosong',
+            subtitle: 'Belum ada jadwal antar-jemput untuk hari ini.',
           )
         else
           ...list.map(
-            (jadwal) => JadwalCard(
-              jadwal: jadwal,
-              showActions: false,
-            ),
+            (jadwal) => JadwalCard(jadwal: jadwal, showActions: false),
           ),
       ],
     );
@@ -419,39 +423,11 @@ class BerandaPage extends StatelessWidget {
         const SizedBox(height: 8),
 
         if (list.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.green.shade50,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.green.shade200),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.check_circle_rounded,
-                  size: 40,
-                  color: Colors.green.shade700,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Semua cucian hari ini telah selesai!',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade900,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Bagus sekali! Tidak ada cucian yang tertunda.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.green.shade800,
-                  ),
-                ),
-              ],
-            ),
+          const EmptyStateWidget(
+            icon: Icons.check_circle_rounded,
+            title: 'Semua cucian hari ini selesai!',
+            subtitle: 'Bagus sekali! Tidak ada cucian yang tertunda.',
+            iconColor: Colors.green,
           )
         else
           ...list.map(

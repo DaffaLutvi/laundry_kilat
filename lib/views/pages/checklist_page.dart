@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../../models/cucian_order.dart';
 import '../../viewmodels/checklist_vm.dart';
 import '../widgets/cucian_tile.dart';
 import '../widgets/cucian_form_sheet.dart';
+import '../widgets/empty_state_widget.dart';
 import '../widgets/pengaturan_estimasi_dialog.dart';
 
 /// Lapisan View: Layar Checklist Cucian & Estimasi Selesai (Fase 3).
@@ -36,7 +38,9 @@ class ChecklistPage extends StatelessWidget {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Order "${order.namaPelanggan}" berhasil dicatat'),
+                  content: Text(
+                    'Order "${order.namaPelanggan}" berhasil dicatat',
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -68,25 +72,28 @@ class ChecklistPage extends StatelessWidget {
         initialCuciKering: vm.jamCuciKering,
         initialSetrikaSaja: vm.jamSetrikaSaja,
         initialKilat: vm.jamKilat,
-        onSave: ({
-          required double cuciSetrika,
-          required double cuciKering,
-          required double setrikaSaja,
-          required double kilat,
-        }) {
-          vm.updatePengaturanLamaPengerjaan(
-            cuciSetrika: cuciSetrika,
-            cuciKering: cuciKering,
-            setrikaSaja: setrikaSaja,
-            kilat: kilat,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Pengaturan estimasi lama pengerjaan berhasil disimpan'),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        },
+        onSave:
+            ({
+              required double cuciSetrika,
+              required double cuciKering,
+              required double setrikaSaja,
+              required double kilat,
+            }) {
+              vm.updatePengaturanLamaPengerjaan(
+                cuciSetrika: cuciSetrika,
+                cuciKering: cuciKering,
+                setrikaSaja: setrikaSaja,
+                kilat: kilat,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Pengaturan estimasi lama pengerjaan berhasil disimpan',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
       ),
     );
   }
@@ -178,9 +185,16 @@ class ChecklistPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: colorScheme.error,
+                    ),
                     const SizedBox(height: 12),
-                    Text(vm.errorMessage!, style: TextStyle(color: colorScheme.error)),
+                    Text(
+                      vm.errorMessage!,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: vm.refresh,
@@ -207,16 +221,24 @@ class ChecklistPage extends StatelessWidget {
               children: [
                 // Info Banner Ringkas
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.primaryContainer.withAlpha(90),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: colorScheme.primary.withAlpha(60)),
+                    border: Border.all(
+                      color: colorScheme.primary.withAlpha(60),
+                    ),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline_rounded,
-                          size: 18, color: colorScheme.primary),
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -249,7 +271,10 @@ class ChecklistPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.orange.shade100,
                         borderRadius: BorderRadius.circular(8),
@@ -267,36 +292,36 @@ class ChecklistPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
 
-                if (aktif.isEmpty)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerLowest,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: colorScheme.outlineVariant.withAlpha(90),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Tidak ada cucian aktif yang sedang diproses.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colorScheme.onSurfaceVariant,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  child: aktif.isEmpty
+                      ? const EmptyStateWidget(
+                          key: ValueKey('active-empty'),
+                          icon: Icons.local_laundry_service_outlined,
+                          title: 'Belum ada cucian aktif',
+                          subtitle:
+                              'Cucian yang perlu diproses akan muncul di sini.',
+                        )
+                      : Column(
+                          key: ValueKey(
+                            'active-${aktif.map((order) => order.id).join(',')}',
+                          ),
+                          children: aktif
+                              .map(
+                                (order) => CucianTile(
+                                  order: order,
+                                  onToggle: (_) => vm.toggleSelesai(order.id),
+                                  onShare: () =>
+                                      _bagikanEstimasi(context, order),
+                                  onDelete: () =>
+                                      _konfirmasiHapus(context, order),
+                                ),
+                              )
+                              .toList(),
                         ),
-                      ),
-                    ),
-                  )
-                else
-                  ...aktif.map(
-                    (order) => CucianTile(
-                      order: order,
-                      onToggle: (_) => vm.toggleSelesai(order.id),
-                      onShare: () => _bagikanEstimasi(context, order),
-                      onDelete: () => _konfirmasiHapus(context, order),
-                    ),
-                  ),
+                ),
 
                 const SizedBox(height: 24),
 
@@ -317,7 +342,10 @@ class ChecklistPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.shade100,
                         borderRadius: BorderRadius.circular(8),
@@ -342,36 +370,36 @@ class ChecklistPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
 
-                if (selesai.isEmpty)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerLowest,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: colorScheme.outlineVariant.withAlpha(90),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Belum ada cucian yang ditandai selesai.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colorScheme.onSurfaceVariant,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  child: selesai.isEmpty
+                      ? const EmptyStateWidget(
+                          key: ValueKey('complete-empty'),
+                          icon: Icons.check_circle_outline_rounded,
+                          title: 'Belum ada cucian selesai',
+                          subtitle: 'Cucian yang sudah ditandai selesai akan muncul di sini.',
+                          iconColor: Colors.green,
+                        )
+                      : Column(
+                          key: ValueKey(
+                            'complete-${selesai.map((order) => order.id).join(',')}',
+                          ),
+                          children: selesai
+                              .map(
+                                (order) => CucianTile(
+                                  order: order,
+                                  onToggle: (_) => vm.toggleSelesai(order.id),
+                                  onShare: () =>
+                                      _bagikanEstimasi(context, order),
+                                  onDelete: () =>
+                                      _konfirmasiHapus(context, order),
+                                ),
+                              )
+                              .toList(),
                         ),
-                      ),
-                    ),
-                  )
-                else
-                  ...selesai.map(
-                    (order) => CucianTile(
-                      order: order,
-                      onToggle: (_) => vm.toggleSelesai(order.id),
-                      onShare: () => _bagikanEstimasi(context, order),
-                      onDelete: () => _konfirmasiHapus(context, order),
-                    ),
-                  ),
+                ),
               ],
             ),
           );

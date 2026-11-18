@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/profil_usaha.dart';
 import '../../models/layanan_harga.dart';
 import '../../models/karyawan.dart';
 import '../../viewmodels/pengaturan_vm.dart';
+import '../widgets/empty_state_widget.dart';
 
 /// Lapisan View: Layar Pengaturan Usaha, Masuk & Akun (Fase 4).
 /// Mengelola:
@@ -44,8 +46,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Nama Usaha *',
                     prefixIcon: Icon(Icons.storefront_rounded),
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Nama usaha wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Nama usaha wajib diisi'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -55,8 +58,9 @@ class PengaturanPage extends StatelessWidget {
                     prefixIcon: Icon(Icons.place_outlined),
                   ),
                   maxLines: 2,
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Alamat wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Alamat wajib diisi'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -65,8 +69,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Kontak / Telepon *',
                     prefixIcon: Icon(Icons.phone_outlined),
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Kontak wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Kontak wajib diisi'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -122,10 +127,14 @@ class PengaturanPage extends StatelessWidget {
     final isEdit = itemToEdit != null;
     final namaCtrl = TextEditingController(text: itemToEdit?.namaLayanan ?? '');
     final hargaCtrl = TextEditingController(
-      text: itemToEdit != null ? itemToEdit.hargaPerKg.toStringAsFixed(0) : '7000',
+      text: itemToEdit != null
+          ? itemToEdit.hargaPerKg.toStringAsFixed(0)
+          : '7000',
     );
     final jamCtrl = TextEditingController(
-      text: itemToEdit != null ? itemToEdit.estimasiJam.toStringAsFixed(0) : '24',
+      text: itemToEdit != null
+          ? itemToEdit.estimasiJam.toStringAsFixed(0)
+          : '24',
     );
 
     showDialog<void>(
@@ -133,7 +142,9 @@ class PengaturanPage extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         title: Row(
           children: [
-            Icon(isEdit ? Icons.edit_rounded : Icons.add_circle_outline_rounded),
+            Icon(
+              isEdit ? Icons.edit_rounded : Icons.add_circle_outline_rounded,
+            ),
             const SizedBox(width: 8),
             Text(isEdit ? 'Ubah Layanan & Harga' : 'Tambah Layanan Baru'),
           ],
@@ -163,9 +174,13 @@ class PengaturanPage extends StatelessWidget {
                     prefixText: 'Rp ',
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Harga wajib diisi';
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Harga wajib diisi';
+                    }
                     final parsed = double.tryParse(v);
-                    if (parsed == null || parsed <= 0) return 'Masukkan nominal valid';
+                    if (parsed == null || parsed <= 0) {
+                      return 'Masukkan nominal valid';
+                    }
                     return null;
                   },
                 ),
@@ -178,9 +193,13 @@ class PengaturanPage extends StatelessWidget {
                     suffixText: 'jam',
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Estimasi jam wajib diisi';
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Estimasi jam wajib diisi';
+                    }
                     final parsed = double.tryParse(v);
-                    if (parsed == null || parsed <= 0) return 'Masukkan jam valid';
+                    if (parsed == null || parsed <= 0) {
+                      return 'Masukkan jam valid';
+                    }
                     return null;
                   },
                 ),
@@ -197,7 +216,8 @@ class PengaturanPage extends StatelessWidget {
             onPressed: () async {
               if (formKey.currentState?.validate() ?? false) {
                 final vm = context.read<PengaturanViewModel>();
-                final id = itemToEdit?.id ??
+                final id =
+                    itemToEdit?.id ??
                     'LYN-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
                 final item = LayananHarga(
                   id: id,
@@ -245,7 +265,9 @@ class PengaturanPage extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         title: Row(
           children: [
-            Icon(isEdit ? Icons.person_outline_rounded : Icons.person_add_rounded),
+            Icon(
+              isEdit ? Icons.person_outline_rounded : Icons.person_add_rounded,
+            ),
             const SizedBox(width: 8),
             Text(isEdit ? 'Ubah Data Karyawan' : 'Tambah Karyawan'),
           ],
@@ -262,8 +284,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Nama Lengkap *',
                     hintText: 'Contoh: Ahmad Fauzi',
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Nama karyawan wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Nama karyawan wajib diisi'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -272,8 +295,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Posisi / Tanggung Jawab *',
                     hintText: 'Contoh: Kurir / Operator Setrika',
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Posisi wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Posisi wajib diisi'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -283,8 +307,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Nomor WhatsApp / Telepon *',
                     hintText: 'Contoh: 0812-3344-5566',
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Nomor telepon wajib diisi' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Nomor telepon wajib diisi'
+                      : null,
                 ),
               ],
             ),
@@ -299,7 +324,8 @@ class PengaturanPage extends StatelessWidget {
             onPressed: () async {
               if (formKey.currentState?.validate() ?? false) {
                 final vm = context.read<PengaturanViewModel>();
-                final id = itemToEdit?.id ??
+                final id =
+                    itemToEdit?.id ??
                     'KRY-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
                 final item = Karyawan(
                   id: id,
@@ -319,7 +345,9 @@ class PengaturanPage extends StatelessWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Data karyawan "${item.nama}" berhasil disimpan'),
+                      content: Text(
+                        'Data karyawan "${item.nama}" berhasil disimpan',
+                      ),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
@@ -363,8 +391,9 @@ class PengaturanPage extends StatelessWidget {
                     labelText: 'Kata Sandi Lama *',
                     prefixIcon: Icon(Icons.lock_outline_rounded),
                   ),
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Masukkan kata sandi lama' : null,
+                  validator: (v) => v == null || v.isEmpty
+                      ? 'Masukkan kata sandi lama'
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -375,7 +404,9 @@ class PengaturanPage extends StatelessWidget {
                     prefixIcon: Icon(Icons.lock_rounded),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Masukkan kata sandi baru';
+                    if (v == null || v.isEmpty) {
+                      return 'Masukkan kata sandi baru';
+                    }
                     if (v.length < 6) return 'Kata sandi minimal 6 karakter';
                     return null;
                   },
@@ -483,9 +514,7 @@ class PengaturanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pengaturan Usaha & Akun'),
-      ),
+      appBar: AppBar(title: const Text('Pengaturan Usaha & Akun')),
       body: Consumer<PengaturanViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading) {
@@ -535,7 +564,11 @@ class PengaturanPage extends StatelessWidget {
 
   // ==================== WIDGET BUILDER SECTION ====================
 
-  Widget _buildAkunCard(BuildContext context, PengaturanViewModel vm, dynamic user) {
+  Widget _buildAkunCard(
+    BuildContext context,
+    PengaturanViewModel vm,
+    dynamic user,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -555,7 +588,11 @@ class PengaturanPage extends StatelessWidget {
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: colorScheme.primaryContainer,
-                  child: Icon(Icons.person_rounded, color: colorScheme.primary, size: 28),
+                  child: Icon(
+                    Icons.person_rounded,
+                    color: colorScheme.primary,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -564,17 +601,24 @@ class PengaturanPage extends StatelessWidget {
                     children: [
                       Text(
                         user.namaLengkap,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         'Username: @${user.username}',
-                        style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(8),
@@ -599,17 +643,22 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.key_rounded, size: 16),
                   label: const Text('Ubah Kata Sandi'),
                   style: OutlinedButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
+                    minimumSize: const Size(0, 48),
                   ),
                 ),
                 const SizedBox(width: 8),
                 TextButton.icon(
                   onPressed: () => _konfirmasiLogout(context),
-                  icon: Icon(Icons.logout_rounded, size: 16, color: colorScheme.error),
-                  label: Text('Keluar', style: TextStyle(color: colorScheme.error)),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
+                  icon: Icon(
+                    Icons.logout_rounded,
+                    size: 16,
+                    color: colorScheme.error,
                   ),
+                  label: Text(
+                    'Keluar',
+                    style: TextStyle(color: colorScheme.error),
+                  ),
+                  style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
                 ),
               ],
             ),
@@ -640,7 +689,10 @@ class PengaturanPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.lock_outline_rounded, color: Colors.amber.shade900),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    color: Colors.amber.shade900,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Masuk Akun Pengelola (FR-7.1)',
@@ -666,7 +718,8 @@ class PengaturanPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                validator: (v) => v == null || v.isEmpty ? 'Masukkan username' : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Masukkan username' : null,
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -678,7 +731,8 @@ class PengaturanPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                validator: (v) => v == null || v.isEmpty ? 'Masukkan kata sandi' : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Masukkan kata sandi' : null,
               ),
               if (vm.errorMessage != null) ...[
                 const SizedBox(height: 8),
@@ -739,7 +793,7 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.edit_outlined, size: 14),
                   label: const Text('Ubah'),
                   style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
+                    minimumSize: const Size(0, 48),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
@@ -840,62 +894,76 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.add_rounded, size: 14),
                   label: const Text('Tambah'),
                   style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
+                    minimumSize: const Size(0, 48),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
               ],
             ),
             const Divider(height: 16),
-            ...list.map((layanan) {
-              final hargaFmt =
-                  'Rp ${layanan.hargaPerKg.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} / kg';
+            if (list.isEmpty)
+              EmptyStateWidget(
+                icon: Icons.local_laundry_service_outlined,
+                title: 'Belum ada layanan',
+                subtitle: 'Tambahkan layanan dan harga untuk usaha Anda.',
+                actionLabel: 'Tambah Layanan',
+                onAction: () => _bukaDialogLayanan(context),
+              )
+            else
+              ...list.map((layanan) {
+                final hargaFmt =
+                    'Rp ${layanan.hargaPerKg.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} / kg';
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              layanan.namaLayanan,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Estimasi: ${layanan.estimasiJam.toStringAsFixed(0)} jam',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: colorScheme.onSurfaceVariant,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                layanan.namaLayanan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                              Text(
+                                'Estimasi: ${layanan.estimasiJam.toStringAsFixed(0)} jam',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        hargaFmt,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.primary,
+                        Text(
+                          hargaFmt,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined, size: 18),
-                        onPressed: () => _bukaDialogLayanan(context, itemToEdit: layanan),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ],
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          onPressed: () =>
+                              _bukaDialogLayanan(context, itemToEdit: layanan),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
           ],
         ),
       ),
@@ -939,103 +1007,115 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.add_rounded, size: 14),
                   label: const Text('Tambah'),
                   style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
+                    minimumSize: const Size(0, 48),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
               ],
             ),
             const Divider(height: 16),
-            ...list.map((karyawan) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: karyawan.isAktif
-                        ? colorScheme.surfaceContainerLow
-                        : colorScheme.surfaceContainerLow.withAlpha(100),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundColor: karyawan.isAktif
-                            ? colorScheme.primaryContainer
-                            : colorScheme.surfaceContainerHighest,
-                        child: Icon(
-                          Icons.person_rounded,
-                          size: 20,
-                          color: karyawan.isAktif
-                              ? colorScheme.primary
-                              : colorScheme.onSurfaceVariant,
+            if (list.isEmpty)
+              EmptyStateWidget(
+                icon: Icons.groups_outlined,
+                title: 'Belum ada karyawan',
+                subtitle:
+                    'Data karyawan yang Anda tambahkan akan tampil di sini.',
+                actionLabel: 'Tambah Karyawan',
+                onAction: () => _bukaDialogKaryawan(context),
+              )
+            else
+              ...list.map((karyawan) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: karyawan.isAktif
+                          ? colorScheme.surfaceContainerLow
+                          : colorScheme.surfaceContainerLow.withAlpha(100),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: karyawan.isAktif
+                              ? colorScheme.primaryContainer
+                              : colorScheme.surfaceContainerHighest,
+                          child: Icon(
+                            Icons.person_rounded,
+                            size: 20,
+                            color: karyawan.isAktif
+                                ? colorScheme.primary
+                                : colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              karyawan.nama,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                decoration: karyawan.isAktif
-                                    ? TextDecoration.none
-                                    : TextDecoration.lineThrough,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                karyawan.nama,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: karyawan.isAktif
+                                      ? TextDecoration.none
+                                      : TextDecoration.lineThrough,
+                                ),
                               ),
+                              Text(
+                                '${karyawan.posisi} • ${karyawan.noTelepon}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Chip Status Aktif / Nonaktif
+                        InkWell(
+                          onTap: () => vm.toggleKaryawanStatus(karyawan.id),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
                             ),
-                            Text(
-                              '${karyawan.posisi} • ${karyawan.noTelepon}',
+                            decoration: BoxDecoration(
+                              color: karyawan.isAktif
+                                  ? Colors.green.shade50
+                                  : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              karyawan.isAktif ? 'Aktif' : 'Nonaktif',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.bold,
+                                color: karyawan.isAktif
+                                    ? Colors.green.shade800
+                                    : Colors.grey.shade700,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      // Chip Status Aktif / Nonaktif
-                      InkWell(
-                        onTap: () => vm.toggleKaryawanStatus(karyawan.id),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: karyawan.isAktif
-                                ? Colors.green.shade50
-                                : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            karyawan.isAktif ? 'Aktif' : 'Nonaktif',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: karyawan.isAktif
-                                  ? Colors.green.shade800
-                                  : Colors.grey.shade700,
-                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined, size: 18),
-                        onPressed: () => _bukaDialogKaryawan(
-                          context,
-                          itemToEdit: karyawan,
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          onPressed: () => _bukaDialogKaryawan(
+                            context,
+                            itemToEdit: karyawan,
+                          ),
                         ),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
           ],
         ),
       ),

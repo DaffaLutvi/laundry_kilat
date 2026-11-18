@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/jadwal_laundry.dart';
 import '../../utils/date_helper.dart';
 import '../../viewmodels/jadwal_vm.dart';
 import '../widgets/jadwal_card.dart';
 import '../widgets/jadwal_form_sheet.dart';
+import '../widgets/empty_state_widget.dart';
 
 /// Lapisan View: Layar Jadwal Antar-Jemput (Fase 2).
 /// Menampilkan:
@@ -33,7 +35,9 @@ class JadwalPage extends StatelessWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Jadwal "${jadwal.namaPelanggan}" berhasil diperbarui'),
+                    content: Text(
+                      'Jadwal "${jadwal.namaPelanggan}" berhasil diperbarui',
+                    ),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -43,7 +47,9 @@ class JadwalPage extends StatelessWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Jadwal baru untuk "${jadwal.namaPelanggan}" berhasil ditambahkan'),
+                    content: Text(
+                      'Jadwal baru untuk "${jadwal.namaPelanggan}" berhasil ditambahkan',
+                    ),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -55,7 +61,10 @@ class JadwalPage extends StatelessWidget {
     );
   }
 
-  Future<void> _konfirmasiHapus(BuildContext context, JadwalLaundry jadwal) async {
+  Future<void> _konfirmasiHapus(
+    BuildContext context,
+    JadwalLaundry jadwal,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -133,9 +142,16 @@ class JadwalPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: colorScheme.error,
+                    ),
                     const SizedBox(height: 12),
-                    Text(vm.errorMessage!, style: TextStyle(color: colorScheme.error)),
+                    Text(
+                      vm.errorMessage!,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: vm.refresh,
@@ -232,7 +248,10 @@ class JadwalPage extends StatelessWidget {
 
                 // Info Jumlah Jadwal Terfilter
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: Row(
                     children: [
                       Text(
@@ -249,10 +268,7 @@ class JadwalPage extends StatelessWidget {
                             vm.setFilterLayanan(null);
                             vm.setFilterHari('Semua');
                           },
-                          style: TextButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                          ),
+                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
                           child: const Text('Reset Filter'),
                         ),
                     ],
@@ -267,38 +283,13 @@ class JadwalPage extends StatelessWidget {
                           child: SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Padding(
-                              padding: const EdgeInsets.all(32),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.event_busy_rounded,
-                                    size: 56,
-                                    color: colorScheme.onSurfaceVariant.withAlpha(120),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Tidak Ada Jadwal Ditemukan',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'Tidak ada jadwal yang cocok dengan filter yang dipilih.',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  FilledButton.tonalIcon(
-                                    onPressed: () => _bukaFormJadwal(context),
-                                    icon: const Icon(Icons.add_rounded),
-                                    label: const Text('Tambah Jadwal Baru'),
-                                  ),
-                                ],
+                              padding: const EdgeInsets.all(16),
+                              child: EmptyStateWidget(
+                                icon: Icons.event_busy_rounded,
+                                title: 'Tidak ada jadwal ditemukan',
+                                subtitle: 'Belum ada jadwal yang cocok dengan filter yang dipilih.',
+                                actionLabel: 'Tambah Jadwal Baru',
+                                onAction: () => _bukaFormJadwal(context),
                               ),
                             ),
                           ),

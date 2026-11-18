@@ -11,6 +11,7 @@ import 'viewmodels/checklist_vm.dart';
 import 'viewmodels/info_vm.dart';
 import 'viewmodels/pengaturan_vm.dart';
 import 'views/pages/main_navigation_page.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -95,26 +96,7 @@ class LaundryKilatApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Laundry Kilat',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF00668B), // Biru laut segar khas laundry
-            brightness: Brightness.light,
-          ),
-          scaffoldBackgroundColor: const Color(0xFFF7F9FC),
-          appBarTheme: const AppBarTheme(
-            centerTitle: false,
-            elevation: 0,
-            scrolledUnderElevation: 2,
-            backgroundColor: Color(0xFFF7F9FC),
-          ),
-          cardTheme: CardThemeData(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-        ),
+        theme: AppTheme.lightTheme,
         home: const MainNavigationPage(),
       ),
     );

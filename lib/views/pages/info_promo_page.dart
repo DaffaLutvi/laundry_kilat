@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../../models/info_laundry.dart';
 import '../../viewmodels/info_vm.dart';
 import '../widgets/info_card.dart';
 import '../widgets/info_form_sheet.dart';
+import '../widgets/empty_state_widget.dart';
 
 /// Lapisan View: Layar Info & Promo (Fase 3 - Fitur Buatan Sendiri).
 /// Menampilkan:
@@ -58,9 +60,7 @@ class InfoPromoPage extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Hapus Info & Promo'),
-        content: Text(
-          'Apakah Anda yakin ingin menghapus "${info.judul}"?',
-        ),
+        content: Text('Apakah Anda yakin ingin menghapus "${info.judul}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -124,9 +124,16 @@ class InfoPromoPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: colorScheme.error,
+                    ),
                     const SizedBox(height: 12),
-                    Text(vm.errorMessage!, style: TextStyle(color: colorScheme.error)),
+                    Text(
+                      vm.errorMessage!,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: vm.refresh,
@@ -171,7 +178,10 @@ class InfoPromoPage extends StatelessWidget {
 
                 // Subtitle Info & Badge
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: Row(
                     children: [
                       Text(
@@ -211,37 +221,14 @@ class InfoPromoPage extends StatelessWidget {
                           child: SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Padding(
-                              padding: const EdgeInsets.all(32),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.campaign_outlined,
-                                    size: 56,
-                                    color: colorScheme.onSurfaceVariant.withAlpha(120),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Tidak Ada Info Ditemukan',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
+                              padding: const EdgeInsets.all(16),
+                              child: EmptyStateWidget(
+                                icon: Icons.campaign_outlined,
+                                title: 'Tidak ada info ditemukan',
+                                subtitle:
                                     'Belum ada info untuk kategori "${vm.selectedKategori}".',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  FilledButton.tonalIcon(
-                                    onPressed: () => _bukaFormInfo(context),
-                                    icon: const Icon(Icons.add_rounded),
-                                    label: const Text('Buat Info Baru'),
-                                  ),
-                                ],
+                                actionLabel: 'Buat Info Baru',
+                                onAction: () => _bukaFormInfo(context),
                               ),
                             ),
                           ),
