@@ -120,22 +120,21 @@ class _JadwalFormSheetState extends State<JadwalFormSheet> {
             children: [
               // Header Sheet
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        isEdit ? Icons.edit_calendar_rounded : Icons.add_circle_outline_rounded,
-                        color: colorScheme.primary,
+                  Icon(
+                    isEdit
+                        ? Icons.edit_calendar_rounded
+                        : Icons.add_circle_outline_rounded,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      isEdit ? 'Ubah Jadwal' : 'Tambah Jadwal Baru',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        isEdit ? 'Ubah Jadwal' : 'Tambah Jadwal Baru',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close_rounded),

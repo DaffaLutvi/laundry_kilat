@@ -6,12 +6,14 @@ import '../../models/cucian_order.dart';
 class CucianTile extends StatelessWidget {
   final CucianOrder order;
   final ValueChanged<bool?>? onToggle;
+  final VoidCallback? onShare;
   final VoidCallback? onDelete;
 
   const CucianTile({
     super.key,
     required this.order,
     this.onToggle,
+    this.onShare,
     this.onDelete,
   });
 
@@ -143,6 +145,17 @@ class CucianTile extends StatelessWidget {
                 ],
               ),
             ),
+
+            if (onShare != null)
+              IconButton(
+                icon: Icon(
+                  Icons.share_outlined,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
+                tooltip: 'Bagikan Estimasi ke Pelanggan',
+                onPressed: onShare,
+              ),
 
             if (onDelete != null)
               IconButton(

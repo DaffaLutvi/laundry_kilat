@@ -33,6 +33,15 @@ class InfoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refresh() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> togglePenting(String id) async {
     _isLoading = true;
     notifyListeners();
@@ -57,6 +66,30 @@ class InfoViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> deleteInfo(String id) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await repository.deleteInfo(id);
+    } catch (e) {
+      _errorMessage = 'Gagal menghapus info: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  String buatPesanBagikan(InfoLaundry info) {
+    return '''
+*LAUNDRY KILAT - ${info.kategori.toUpperCase()}*
+✨ *${info.judul}* ✨
+
+${info.deskripsi}
+
+Hubungi Laundry Kilat sekarang untuk info dan pemesanan antar-jemput!
+'''.trim();
   }
 
   @override

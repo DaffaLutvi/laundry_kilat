@@ -6,12 +6,14 @@ import '../../models/info_laundry.dart';
 class InfoCard extends StatelessWidget {
   final InfoLaundry info;
   final VoidCallback? onTogglePenting;
+  final VoidCallback? onShare;
   final VoidCallback? onDelete;
 
   const InfoCard({
     super.key,
     required this.info,
     this.onTogglePenting,
+    this.onShare,
     this.onDelete,
   });
 
@@ -43,54 +45,66 @@ class InfoCard extends StatelessWidget {
             // Header Baris: Kategori & Badge Penting
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    info.kategori,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSecondaryContainer,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-
-                if (info.isPenting)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.campaign_rounded,
-                          size: 13,
-                          color: colorScheme.onErrorContainer,
+                Expanded(
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: colorScheme.secondaryContainer,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'PENTING',
+                        child: Text(
+                          info.kategori,
                           style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.5,
-                            color: colorScheme.onErrorContainer,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSecondaryContainer,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      if (info.isPenting)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: colorScheme.errorContainer,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.campaign_rounded,
+                                size: 13,
+                                color: colorScheme.onErrorContainer,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'PENTING',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                  color: colorScheme.onErrorContainer,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
-
-                const Spacer(),
-
+                ),
+                if (onShare != null)
+                  IconButton(
+                    icon: const Icon(Icons.share_outlined, size: 18),
+                    tooltip: 'Bagikan Info',
+                    onPressed: onShare,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  ),
                 if (onTogglePenting != null)
                   IconButton(
                     icon: Icon(
@@ -100,13 +114,24 @@ class InfoCard extends StatelessWidget {
                       color: info.isPenting
                           ? Colors.amber.shade700
                           : colorScheme.onSurfaceVariant,
-                      size: 22,
+                      size: 20,
                     ),
-                    tooltip: info.isPenting
-                        ? 'Tandai Biasa'
-                        : 'Tandai Penting',
+                    tooltip: info.isPenting ? 'Tandai Biasa' : 'Tandai Penting',
                     onPressed: onTogglePenting,
-                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete_outline_rounded,
+                      color: colorScheme.error.withAlpha(180),
+                      size: 18,
+                    ),
+                    tooltip: 'Hapus Info',
+                    onPressed: onDelete,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),
               ],
             ),

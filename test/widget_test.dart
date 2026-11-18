@@ -72,4 +72,55 @@ void main() {
     await tester.tap(find.byIcon(Icons.close_rounded));
     await tester.pumpAndSettle();
   });
+
+  testWidgets('Laundry Kilat - Fase 3: Checklist Cucian, Estimasi Selesai & Info Promo', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const LaundryKilatApp());
+    await tester.pumpAndSettle();
+
+    // 1. UJI TAB CHECKLIST
+    await tester.tap(find.text('Checklist'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Cucian Aktif (Proses)'), findsOneWidget);
+    expect(find.text('Selesai'), findsOneWidget);
+
+    // Buka dialog Atur Lama Pengerjaan (FR-4.2)
+    await tester.tap(find.byIcon(Icons.tune_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Atur Lama Pengerjaan'), findsOneWidget);
+    await tester.tap(find.text('Batal'));
+    await tester.pumpAndSettle();
+
+    // Buka form Catat Cucian & Estimasi Otomatis (FR-4.1)
+    await tester.tap(find.text('Catat Cucian'));
+    await tester.pumpAndSettle();
+    expect(find.text('Catat Cucian Masuk'), findsOneWidget);
+    expect(find.textContaining('Estimasi Selesai Otomatis'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.pumpAndSettle();
+
+    // 2. UJI TAB INFO & PROMO (FR-5.1, FR-5.2, FR-5.3)
+    await tester.tap(find.text('Info & Promo'));
+    await tester.pumpAndSettle();
+
+    // Verifikasi filter kategori Chip
+    expect(find.widgetWithText(FilterChip, 'Semua'), findsOneWidget);
+    expect(find.widgetWithText(FilterChip, 'Promo'), findsOneWidget);
+    expect(find.widgetWithText(FilterChip, 'Paket'), findsOneWidget);
+
+    // Verifikasi label Penting muncul
+    expect(find.text('PENTING'), findsWidgets);
+
+    // Filter kategori Promo (scroll ke elemen jika perlu)
+    final promoChip = find.widgetWithText(FilterChip, 'Promo');
+    await tester.ensureVisible(promoChip);
+    await tester.pumpAndSettle();
+    await tester.tap(promoChip);
+    await tester.pumpAndSettle();
+  });
 }

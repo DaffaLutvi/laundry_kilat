@@ -1,9 +1,143 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../models/cucian_order.dart';
+import '../../viewmodels/checklist_vm.dart';
+import '../widgets/cucian_tile.dart';
+import '../widgets/cucian_form_sheet.dart';
+import '../widgets/pengaturan_estimasi_dialog.dart';
 
-/// Lapisan View: Layar Checklist Cucian & Estimasi (Fase 3).
-/// Menampilkan daftar cucian aktif, bagian selesai, serta kalkulasi estimasi pengerjaan.
+/// Lapisan View: Layar Checklist Cucian & Estimasi Selesai (Fase 3).
+/// Menampilkan:
+/// 1. Daftar cucian aktif (FR-3.1)
+/// 2. Centang untuk isDone = true (FR-3.2)
+/// 3. Bagian Selesai dengan opsi membatalkan centang (FR-3.3)
+/// 4. Estimasi selesai otomatis & atur lama pengerjaan (FR-4.1, FR-4.2)
+/// 5. Tombol bagikan via share bawaan ponsel (FR-4.3)
 class ChecklistPage extends StatelessWidget {
   const ChecklistPage({super.key});
+
+  void _bukaFormCucian(BuildContext context) {
+    final vm = context.read<ChecklistViewModel>();
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return CucianFormSheet(
+          onHitungEstimasiJam: (layanan, berat) {
+            return vm.hitungEstimasiJam(layanan, berat);
+          },
+          onSave: (order, shareLangsung) async {
+            await vm.addCucian(order);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Order "${order.namaPelanggan}" berhasil dicatat'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+
+              if (shareLangsung) {
+                final pesan = vm.buatPesanBagikan(order);
+                await SharePlus.instance.share(
+                  ShareParams(
+                    text: pesan,
+                    subject:
+                        'Estimasi Selesai Laundry Kilat - ${order.namaPelanggan}',
+                  ),
+                );
+              }
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void _bukaPengaturanEstimasi(BuildContext context) {
+    final vm = context.read<ChecklistViewModel>();
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => PengaturanEstimasiDialog(
+        initialCuciSetrika: vm.jamCuciSetrika,
+        initialCuciKering: vm.jamCuciKering,
+        initialSetrikaSaja: vm.jamSetrikaSaja,
+        initialKilat: vm.jamKilat,
+        onSave: ({
+          required double cuciSetrika,
+          required double cuciKering,
+          required double setrikaSaja,
+          required double kilat,
+        }) {
+          vm.updatePengaturanLamaPengerjaan(
+            cuciSetrika: cuciSetrika,
+            cuciKering: cuciKering,
+            setrikaSaja: setrikaSaja,
+            kilat: kilat,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Pengaturan estimasi lama pengerjaan berhasil disimpan'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _bagikanEstimasi(BuildContext context, CucianOrder order) async {
+    final vm = context.read<ChecklistViewModel>();
+    final pesan = vm.buatPesanBagikan(order);
+    await SharePlus.instance.share(
+      ShareParams(
+        text: pesan,
+        subject: 'Estimasi Selesai Laundry Kilat - ${order.namaPelanggan}',
+      ),
+    );
+  }
+
+  Future<void> _konfirmasiHapus(BuildContext context, CucianOrder order) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus Order'),
+        content: Text(
+          'Hapus order cucian untuk "${order.namaPelanggan}" (${order.beratKg} kg)?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await context.read<ChecklistViewModel>().deleteCucian(order.id);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Order "${order.namaPelanggan}" telah dihapus'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,34 +147,235 @@ class ChecklistPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checklist Cucian'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune_rounded),
+            tooltip: 'Atur Lama Pengerjaan Standar',
+            onPressed: () => _bukaPengaturanEstimasi(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add_shopping_cart_rounded),
+            tooltip: 'Catat Cucian',
+            onPressed: () => _bukaFormCucian(context),
+          ),
+        ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.checklist_rtl_rounded,
-                size: 64,
-                color: colorScheme.primary.withAlpha(180),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Modul Checklist Cucian & Estimasi',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _bukaFormCucian(context),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Catat Cucian'),
+      ),
+      body: Consumer<ChecklistViewModel>(
+        builder: (context, vm, child) {
+          if (vm.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (vm.errorMessage != null) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                    const SizedBox(height: 12),
+                    Text(vm.errorMessage!, style: TextStyle(color: colorScheme.error)),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: vm.refresh,
+                      child: const Text('Coba Lagi'),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Akan diimplementasikan pada Fase 3 sesuai alur pengerjaan bertahap.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: colorScheme.onSurfaceVariant),
+            );
+          }
+
+          final aktif = vm.cucianAktif;
+          final selesai = vm.cucianSelesai;
+
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
+            child: ListView(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 12,
+                bottom: 80, // Ruang untuk FAB
               ),
-            ],
-          ),
-        ),
+              children: [
+                // Info Banner Ringkas
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer.withAlpha(90),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: colorScheme.primary.withAlpha(60)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline_rounded,
+                          size: 18, color: colorScheme.primary),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Centang cucian untuk memindahkannya ke "Selesai". Tap icon share untuk kirim estimasi ke pelanggan.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // 1. BAGIAN CUCIAN AKTIF (FR-3.1)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.pending_actions_rounded,
+                      size: 20,
+                      color: Colors.orange.shade800,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Cucian Aktif (Proses)',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${aktif.length}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange.shade900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                if (aktif.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withAlpha(90),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Tidak ada cucian aktif yang sedang diproses.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  ...aktif.map(
+                    (order) => CucianTile(
+                      order: order,
+                      onToggle: (_) => vm.toggleSelesai(order.id),
+                      onShare: () => _bagikanEstimasi(context, order),
+                      onDelete: () => _konfirmasiHapus(context, order),
+                    ),
+                  ),
+
+                const SizedBox(height: 24),
+
+                // 2. BAGIAN SELESAI (FR-3.3)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 20,
+                      color: Colors.green.shade800,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Selesai',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${selesai.length}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Cucian yang telah selesai dicuci & disetrika. Buka centang jika ingin membatalkan.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                if (selesai.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withAlpha(90),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Belum ada cucian yang ditandai selesai.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  ...selesai.map(
+                    (order) => CucianTile(
+                      order: order,
+                      onToggle: (_) => vm.toggleSelesai(order.id),
+                      onShare: () => _bagikanEstimasi(context, order),
+                      onDelete: () => _konfirmasiHapus(context, order),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
