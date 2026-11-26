@@ -26,20 +26,20 @@ class InfoCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: info.isPenting ? const Color(0xFFFFF7F7) : AppTheme.cardColor,
+        color: info.isPenting ? const Color(0xFFFFF8F8) : AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: info.isPenting
-              ? AppTheme.urgentRed.withAlpha(160)
+              ? AppTheme.urgentRed.withAlpha(140)
               : AppTheme.outlineBorder,
-          width: info.isPenting ? 1.6 : 1.0,
+          width: info.isPenting ? 1.4 : 1.0,
         ),
         boxShadow: AppTheme.cardShadow,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -66,7 +66,7 @@ class InfoCard extends StatelessWidget {
                           info.kategori,
                           style: const TextStyle(
                             fontSize: 11,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w700,
                             color: AppTheme.primaryColor,
                           ),
                         ),
@@ -76,15 +76,15 @@ class InfoCard extends StatelessWidget {
                       if (info.isPenting)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            horizontal: 9,
+                            vertical: 3.5,
                           ),
                           decoration: BoxDecoration(
                             color: AppTheme.urgentRed,
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
-                                color: AppTheme.urgentRed.withAlpha(60),
+                                color: AppTheme.urgentRed.withAlpha(50),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -102,7 +102,7 @@ class InfoCard extends StatelessWidget {
                               Text(
                                 'PENTING',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 10.5,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: 0.8,
                                   color: Colors.white,
@@ -118,10 +118,10 @@ class InfoCard extends StatelessWidget {
                 // Tombol Aksi (Target sentuh minimal 48dp)
                 if (onShare != null)
                   SizedBox(
-                    width: 48,
+                    width: 44,
                     height: 48,
                     child: IconButton(
-                      icon: const Icon(Icons.share_outlined, size: 18),
+                      icon: const Icon(Icons.share_outlined, size: 19),
                       tooltip: 'Bagikan Info',
                       color: AppTheme.primaryColor,
                       onPressed: onShare,
@@ -130,7 +130,7 @@ class InfoCard extends StatelessWidget {
 
                 if (onTogglePenting != null)
                   SizedBox(
-                    width: 48,
+                    width: 44,
                     height: 48,
                     child: IconButton(
                       icon: Icon(
@@ -151,13 +151,13 @@ class InfoCard extends StatelessWidget {
 
                 if (onDelete != null)
                   SizedBox(
-                    width: 48,
+                    width: 44,
                     height: 48,
                     child: IconButton(
                       icon: Icon(
                         Icons.delete_outline_rounded,
+                        size: 19,
                         color: colorScheme.error.withAlpha(180),
-                        size: 18,
                       ),
                       tooltip: 'Hapus Info',
                       onPressed: onDelete,
@@ -165,7 +165,7 @@ class InfoCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
             // Judul Info
             Text(

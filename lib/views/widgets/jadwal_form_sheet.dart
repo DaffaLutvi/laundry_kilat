@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/jadwal_laundry.dart';
+import '../../theme/app_theme.dart';
 import '../../utils/date_helper.dart';
 
 /// Lapisan View: Formulir modal bottom sheet untuk Tambah & Ubah JadwalLaundry.
@@ -100,7 +101,6 @@ class _JadwalFormSheetState extends State<JadwalFormSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final isEdit = widget.jadwalToEdit != null;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -108,7 +108,7 @@ class _JadwalFormSheetState extends State<JadwalFormSheet> {
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 20,
+        top: 12,
         bottom: bottomInset + 20,
       ),
       child: Form(
@@ -118,16 +118,37 @@ class _JadwalFormSheetState extends State<JadwalFormSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Drag Handle Modern
+              Center(
+                child: Container(
+                  width: 38,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                    color: AppTheme.outlineBorder,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+
               // Header Sheet
               Row(
                 children: [
-                  Icon(
-                    isEdit
-                        ? Icons.edit_calendar_rounded
-                        : Icons.add_circle_outline_rounded,
-                    color: colorScheme.primary,
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryLight,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      isEdit
+                          ? Icons.edit_calendar_rounded
+                          : Icons.add_circle_outline_rounded,
+                      color: AppTheme.primaryColor,
+                      size: 20,
+                    ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       isEdit ? 'Ubah Jadwal' : 'Tambah Jadwal Baru',
@@ -142,7 +163,7 @@ class _JadwalFormSheetState extends State<JadwalFormSheet> {
                   ),
                 ],
               ),
-              const Divider(height: 24),
+              const Divider(height: 20),
 
               // 1. Jenis Layanan (SegmentedButton)
               Text(

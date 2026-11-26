@@ -51,7 +51,7 @@ class CucianTile extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: order.isDone ? AppTheme.successGreenBg : AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
@@ -64,23 +64,33 @@ class CucianTile extends StatelessWidget {
         boxShadow: order.isDone ? null : AppTheme.cardShadow,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           children: [
             // Checkbox status selesai (Target sentuh luas 48dp)
             SizedBox(
               width: 48,
               height: 48,
-              child: Checkbox(
-                value: order.isDone,
-                onChanged: onToggle,
-                activeColor: AppTheme.successGreen,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+              child: Transform.scale(
+                scale: 1.1,
+                child: Checkbox(
+                  value: order.isDone,
+                  onChanged: onToggle,
+                  activeColor: AppTheme.successGreen,
+                  checkColor: Colors.white,
+                  side: BorderSide(
+                    color: order.isDone
+                        ? AppTheme.successGreen
+                        : AppTheme.textSecondary.withAlpha(160),
+                    width: 1.8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
 
             // Detail Order
             Expanded(
@@ -97,8 +107,9 @@ class CucianTile extends StatelessWidget {
                             decoration: order.isDone
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
+                            decorationColor: AppTheme.successGreen,
                             color: order.isDone
-                                ? AppTheme.successGreen.withAlpha(200)
+                                ? AppTheme.textSecondary
                                 : AppTheme.textPrimary,
                           ),
                           maxLines: 1,
@@ -109,19 +120,33 @@ class CucianTile extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
-                            vertical: 2,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.successGreen.withAlpha(30),
+                            color: AppTheme.successGreen.withAlpha(25),
                             borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            'Tuntas',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.successGreen,
+                            border: Border.all(
+                              color: AppTheme.successGreen.withAlpha(80),
                             ),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.check_rounded,
+                                size: 12,
+                                color: AppTheme.successGreen,
+                              ),
+                              SizedBox(width: 3),
+                              Text(
+                                'Tuntas',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppTheme.successGreen,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                     ],
@@ -181,7 +206,7 @@ class CucianTile extends StatelessWidget {
                               order.jenisLayanan.label,
                               style: TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w700,
                                 color: serviceFg,
                               ),
                             ),
@@ -197,13 +222,13 @@ class CucianTile extends StatelessWidget {
             // Tombol Bagikan Estimasi (Target sentuh minimal 48dp)
             if (onShare != null)
               SizedBox(
-                width: 48,
+                width: 44,
                 height: 48,
                 child: IconButton(
                   icon: const Icon(
                     Icons.share_outlined,
                     color: AppTheme.primaryColor,
-                    size: 20,
+                    size: 19,
                   ),
                   tooltip: 'Bagikan Estimasi ke Pelanggan',
                   onPressed: onShare,
@@ -213,13 +238,13 @@ class CucianTile extends StatelessWidget {
             // Tombol Hapus Order
             if (onDelete != null)
               SizedBox(
-                width: 48,
+                width: 44,
                 height: 48,
                 child: IconButton(
                   icon: Icon(
                     Icons.delete_outline_rounded,
-                    color: colorScheme.error.withAlpha(180),
-                    size: 20,
+                    color: colorScheme.error.withAlpha(190),
+                    size: 19,
                   ),
                   tooltip: 'Hapus Order',
                   onPressed: onDelete,

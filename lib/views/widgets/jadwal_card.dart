@@ -50,7 +50,7 @@ class JadwalCard extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
@@ -58,16 +58,19 @@ class JadwalCard extends StatelessWidget {
         boxShadow: AppTheme.cardShadow,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Badge Jam & Hari
+            // Badge Jam & Hari (Vertical Card Modern)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 color: AppTheme.primaryLight,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppTheme.primaryColor.withAlpha(35),
+                ),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -77,30 +80,41 @@ class JadwalCard extends StatelessWidget {
                     size: 16,
                     color: AppTheme.primaryColor,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     jadwal.jam,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: AppTheme.primaryColor,
+                      letterSpacing: -0.2,
                     ),
                   ),
                   if (showHari) ...[
                     const SizedBox(height: 2),
-                    Text(
-                      jadwal.hari,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryDark.withAlpha(200),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        jadwal.hari,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primaryDark.withAlpha(220),
+                        ),
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
 
             // Informasi Utama
             Expanded(
@@ -113,34 +127,34 @@ class JadwalCard extends StatelessWidget {
                         child: Text(
                           jadwal.namaPelanggan,
                           style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w700,
                             color: AppTheme.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       // Badge Jenis Layanan
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
-                          vertical: 4,
+                          vertical: 3,
                         ),
                         decoration: BoxDecoration(
                           color: badgeBg,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(serviceIcon, size: 14, color: badgeFg),
+                            Icon(serviceIcon, size: 13, color: badgeFg),
                             const SizedBox(width: 4),
                             Text(
                               jadwal.jenisLayanan.label,
                               style: TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w700,
                                 color: badgeFg,
                               ),
                             ),
@@ -149,16 +163,19 @@ class JadwalCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
 
                   // Alamat Pelanggan
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.place_outlined,
-                        size: 15,
-                        color: AppTheme.textSecondary,
+                      const Padding(
+                        padding: EdgeInsets.only(top: 2),
+                        child: Icon(
+                          Icons.place_outlined,
+                          size: 14,
+                          color: AppTheme.textSecondary,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Expanded(
@@ -166,7 +183,7 @@ class JadwalCard extends StatelessWidget {
                           jadwal.alamat,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: AppTheme.textSecondary,
-                            height: 1.3,
+                            height: 1.35,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -177,20 +194,21 @@ class JadwalCard extends StatelessWidget {
 
                   // Aksi Ubah & Hapus (jika diaktifkan)
                   if (showActions) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (onEdit != null)
                           TextButton.icon(
                             onPressed: onEdit,
-                            icon: const Icon(Icons.edit_outlined, size: 16),
+                            icon: const Icon(Icons.edit_outlined, size: 15),
                             label: const Text('Ubah'),
                             style: TextButton.styleFrom(
-                              minimumSize: const Size(60, 48),
+                              minimumSize: const Size(60, 44),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
                               ),
+                              foregroundColor: AppTheme.primaryColor,
                             ),
                           ),
                         if (onDelete != null)
@@ -198,7 +216,7 @@ class JadwalCard extends StatelessWidget {
                             onPressed: onDelete,
                             icon: Icon(
                               Icons.delete_outline_rounded,
-                              size: 16,
+                              size: 15,
                               color: colorScheme.error,
                             ),
                             label: Text(
@@ -206,7 +224,7 @@ class JadwalCard extends StatelessWidget {
                               style: TextStyle(color: colorScheme.error),
                             ),
                             style: TextButton.styleFrom(
-                              minimumSize: const Size(60, 48),
+                              minimumSize: const Size(60, 44),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
                               ),

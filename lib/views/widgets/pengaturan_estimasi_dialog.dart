@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
 
 /// Lapisan View: Dialog untuk mengatur lama pengerjaan standar per jenis layanan (FR-4.2).
 class PengaturanEstimasiDialog extends StatefulWidget {
@@ -60,9 +61,12 @@ class _PengaturanEstimasiDialogState extends State<PengaturanEstimasiDialog> {
   }
 
   void _simpan() {
-    final cs = double.tryParse(_cuciSetrikaController.text) ?? widget.initialCuciSetrika;
-    final ck = double.tryParse(_cuciKeringController.text) ?? widget.initialCuciKering;
-    final ss = double.tryParse(_setrikaSajaController.text) ?? widget.initialSetrikaSaja;
+    final cs =
+        double.tryParse(_cuciSetrikaController.text) ?? widget.initialCuciSetrika;
+    final ck =
+        double.tryParse(_cuciKeringController.text) ?? widget.initialCuciKering;
+    final ss =
+        double.tryParse(_setrikaSajaController.text) ?? widget.initialSetrikaSaja;
     final kl = double.tryParse(_kilatController.text) ?? widget.initialKilat;
 
     widget.onSave(
@@ -79,7 +83,7 @@ class _PengaturanEstimasiDialogState extends State<PengaturanEstimasiDialog> {
     return AlertDialog(
       title: const Row(
         children: [
-          Icon(Icons.tune_rounded),
+          Icon(Icons.tune_rounded, color: AppTheme.primaryColor),
           SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -96,16 +100,32 @@ class _PengaturanEstimasiDialogState extends State<PengaturanEstimasiDialog> {
           children: [
             const Text(
               'Sesuaikan estimasi jam standar untuk masing-masing jenis layanan (FR-4.2):',
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 16),
-            _buildField('Cuci Setrika', _cuciSetrikaController, Icons.iron_rounded),
+            _buildField(
+              'Cuci Setrika',
+              _cuciSetrikaController,
+              Icons.iron_rounded,
+            ),
             const SizedBox(height: 12),
-            _buildField('Cuci Kering', _cuciKeringController, Icons.dry_cleaning_rounded),
+            _buildField(
+              'Cuci Kering',
+              _cuciKeringController,
+              Icons.dry_cleaning_rounded,
+            ),
             const SizedBox(height: 12),
-            _buildField('Setrika Saja', _setrikaSajaController, Icons.checkroom_rounded),
+            _buildField(
+              'Setrika Saja',
+              _setrikaSajaController,
+              Icons.checkroom_rounded,
+            ),
             const SizedBox(height: 12),
-            _buildField('Layanan Kilat', _kilatController, Icons.bolt_rounded),
+            _buildField(
+              'Layanan Kilat',
+              _kilatController,
+              Icons.bolt_rounded,
+            ),
           ],
         ),
       ),
@@ -122,7 +142,11 @@ class _PengaturanEstimasiDialogState extends State<PengaturanEstimasiDialog> {
     );
   }
 
-  Widget _buildField(String label, TextEditingController controller, IconData icon) {
+  Widget _buildField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.number,
@@ -130,8 +154,11 @@ class _PengaturanEstimasiDialogState extends State<PengaturanEstimasiDialog> {
         labelText: '$label (jam)',
         prefixIcon: Icon(icon, size: 20),
         suffixText: 'jam',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
       ),
     );
   }

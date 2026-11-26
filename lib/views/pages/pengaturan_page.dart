@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/profil_usaha.dart';
 import '../../models/layanan_harga.dart';
 import '../../models/karyawan.dart';
+import '../../theme/app_theme.dart';
 import '../../viewmodels/pengaturan_vm.dart';
 import '../widgets/empty_state_widget.dart';
 
@@ -572,26 +573,30 @@ class PengaturanPage extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant.withAlpha(120)),
+        border: Border.all(color: AppTheme.outlineBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
-      color: colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: colorScheme.primaryContainer,
-                  child: Icon(
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: const BoxDecoration(
+                    gradient: AppTheme.primaryGradient,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
                     Icons.person_rounded,
-                    color: colorScheme.primary,
-                    size: 28,
+                    color: Colors.white,
+                    size: 26,
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -605,10 +610,11 @@ class PengaturanPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 2),
                       Text(
                         'Username: @${user.username}',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                          color: AppTheme.textSecondary,
                         ),
                       ),
                     ],
@@ -616,19 +622,20 @@ class PengaturanPage extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                    horizontal: 9,
+                    vertical: 3.5,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade50,
+                    color: AppTheme.successGreenBg,
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppTheme.successGreenBorder),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Aktif',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green.shade800,
+                      color: AppTheme.successGreen,
                     ),
                   ),
                 ),
@@ -643,7 +650,7 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.key_rounded, size: 16),
                   label: const Text('Ubah Kata Sandi'),
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 48),
+                    minimumSize: const Size(0, 44),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -658,7 +665,7 @@ class PengaturanPage extends StatelessWidget {
                     'Keluar',
                     style: TextStyle(color: colorScheme.error),
                   ),
-                  style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
+                  style: TextButton.styleFrom(minimumSize: const Size(0, 44)),
                 ),
               ],
             ),
@@ -764,13 +771,13 @@ class PengaturanPage extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant.withAlpha(120)),
+        border: Border.all(color: AppTheme.outlineBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
-      color: colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -778,8 +785,19 @@ class PengaturanPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.storefront_rounded, color: colorScheme.primary),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.storefront_rounded,
+                    color: AppTheme.primaryColor,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Profil Usaha (FR-6.1)',
@@ -793,18 +811,18 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.edit_outlined, size: 14),
                   label: const Text('Ubah'),
                   style: FilledButton.styleFrom(
-                    minimumSize: const Size(0, 48),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 16),
+            const Divider(height: 20),
             Text(
               profil.namaUsaha,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: colorScheme.primary,
+                color: AppTheme.primaryColor,
               ),
             ),
             const SizedBox(height: 8),
@@ -865,13 +883,13 @@ class PengaturanPage extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant.withAlpha(120)),
+        border: Border.all(color: AppTheme.outlineBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
-      color: colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -879,8 +897,19 @@ class PengaturanPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.payments_outlined, color: colorScheme.primary),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.payments_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Layanan & Harga / kg (FR-6.2)',
@@ -894,13 +923,13 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.add_rounded, size: 14),
                   label: const Text('Tambah'),
                   style: FilledButton.styleFrom(
-                    minimumSize: const Size(0, 48),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 16),
+            const Divider(height: 20),
             if (list.isEmpty)
               EmptyStateWidget(
                 icon: Icons.local_laundry_service_outlined,
@@ -919,11 +948,12 @@ class PengaturanPage extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
-                      vertical: 8,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerLow,
+                      color: AppTheme.surfaceMuted,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.outlineBorderLight),
                     ),
                     child: Row(
                       children: [
@@ -937,6 +967,7 @@ class PengaturanPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              const SizedBox(height: 2),
                               Text(
                                 'Estimasi: ${layanan.estimasiJam.toStringAsFixed(0)} jam',
                                 style: TextStyle(
@@ -947,11 +978,22 @@ class PengaturanPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Text(
-                          hargaFmt,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.primary,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryLight,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            hargaFmt,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: AppTheme.primaryColor,
+                            ),
                           ),
                         ),
                         IconButton(
@@ -978,13 +1020,13 @@ class PengaturanPage extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant.withAlpha(120)),
+        border: Border.all(color: AppTheme.outlineBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
-      color: colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -992,8 +1034,19 @@ class PengaturanPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.badge_outlined, color: colorScheme.primary),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.badge_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Kelola Karyawan (FR-6.3)',
@@ -1007,13 +1060,13 @@ class PengaturanPage extends StatelessWidget {
                   icon: const Icon(Icons.add_rounded, size: 14),
                   label: const Text('Tambah'),
                   style: FilledButton.styleFrom(
-                    minimumSize: const Size(0, 48),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 16),
+            const Divider(height: 20),
             if (list.isEmpty)
               EmptyStateWidget(
                 icon: Icons.groups_outlined,
@@ -1030,26 +1083,27 @@ class PengaturanPage extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
-                      vertical: 8,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
                       color: karyawan.isAktif
-                          ? colorScheme.surfaceContainerLow
-                          : colorScheme.surfaceContainerLow.withAlpha(100),
+                          ? AppTheme.surfaceMuted
+                          : AppTheme.surfaceMuted.withAlpha(100),
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.outlineBorderLight),
                     ),
                     child: Row(
                       children: [
                         CircleAvatar(
                           radius: 18,
                           backgroundColor: karyawan.isAktif
-                              ? colorScheme.primaryContainer
+                              ? AppTheme.primaryLight
                               : colorScheme.surfaceContainerHighest,
                           child: Icon(
                             Icons.person_rounded,
                             size: 20,
                             color: karyawan.isAktif
-                                ? colorScheme.primary
+                                ? AppTheme.primaryColor
                                 : colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -1088,9 +1142,14 @@ class PengaturanPage extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: karyawan.isAktif
-                                  ? Colors.green.shade50
+                                  ? AppTheme.successGreenBg
                                   : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: karyawan.isAktif
+                                    ? AppTheme.successGreenBorder
+                                    : Colors.grey.shade300,
+                              ),
                             ),
                             child: Text(
                               karyawan.isAktif ? 'Aktif' : 'Nonaktif',
@@ -1098,7 +1157,7 @@ class PengaturanPage extends StatelessWidget {
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
                                 color: karyawan.isAktif
-                                    ? Colors.green.shade800
+                                    ? AppTheme.successGreen
                                     : Colors.grey.shade700,
                               ),
                             ),

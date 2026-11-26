@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
 import 'beranda_page.dart';
 import 'jadwal_page.dart';
 import 'checklist_page.dart';
@@ -33,40 +34,51 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         index: _currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Beranda',
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: AppTheme.cardColor,
+          border: Border(
+            top: BorderSide(
+              color: AppTheme.outlineBorder,
+              width: 1,
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Jadwal',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.checklist_rtl_outlined),
-            selectedIcon: Icon(Icons.checklist_rounded),
-            label: 'Checklist',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.campaign_outlined),
-            selectedIcon: Icon(Icons.campaign_rounded),
-            label: 'Info & Promo',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings_rounded),
-            label: 'Pengaturan',
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home_rounded),
+              label: 'Beranda',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.calendar_today_outlined),
+              selectedIcon: Icon(Icons.calendar_month_rounded),
+              label: 'Jadwal',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.checklist_rtl_outlined),
+              selectedIcon: Icon(Icons.checklist_rounded),
+              label: 'Checklist',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.campaign_outlined),
+              selectedIcon: Icon(Icons.campaign_rounded),
+              label: 'Info & Promo',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings_outlined),
+              selectedIcon: Icon(Icons.settings_rounded),
+              label: 'Pengaturan',
+            ),
+          ],
+        ),
       ),
     );
   }

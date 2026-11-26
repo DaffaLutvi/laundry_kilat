@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../models/cucian_order.dart';
+import '../../theme/app_theme.dart';
 import '../../viewmodels/checklist_vm.dart';
 import '../widgets/cucian_tile.dart';
 import '../widgets/cucian_form_sheet.dart';
@@ -160,10 +161,17 @@ class ChecklistPage extends StatelessWidget {
             tooltip: 'Atur Lama Pengerjaan Standar',
             onPressed: () => _bukaPengaturanEstimasi(context),
           ),
-          IconButton(
-            icon: const Icon(Icons.add_shopping_cart_rounded),
-            tooltip: 'Catat Cucian',
-            onPressed: () => _bukaFormCucian(context),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton.filledTonal(
+              icon: const Icon(Icons.add_shopping_cart_rounded, size: 20),
+              tooltip: 'Catat Cucian',
+              style: IconButton.styleFrom(
+                backgroundColor: AppTheme.primaryLight,
+                foregroundColor: AppTheme.primaryColor,
+              ),
+              onPressed: () => _bukaFormCucian(context),
+            ),
           ),
         ],
       ),
@@ -215,37 +223,45 @@ class ChecklistPage extends StatelessWidget {
               padding: const EdgeInsets.only(
                 left: 16,
                 right: 16,
-                top: 12,
-                bottom: 80, // Ruang untuk FAB
+                top: 8,
+                bottom: 84, // Ruang untuk FAB
               ),
               children: [
-                // Info Banner Ringkas
+                // Info Banner Ringkas Bergaya Modern
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
-                    vertical: 10,
+                    vertical: 11,
                   ),
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withAlpha(90),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: colorScheme.primary.withAlpha(60),
+                      color: AppTheme.primaryColor.withAlpha(40),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.info_outline_rounded,
-                        size: 18,
-                        color: colorScheme.primary,
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor.withAlpha(25),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.info_outline_rounded,
+                          size: 16,
+                          color: AppTheme.primaryColor,
+                        ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           'Centang cucian untuk memindahkannya ke "Selesai". Tap icon share untuk kirim estimasi ke pelanggan.',
                           style: TextStyle(
                             fontSize: 12,
-                            color: colorScheme.onPrimaryContainer,
+                            color: AppTheme.onPrimaryContainer,
+                            height: 1.35,
                           ),
                         ),
                       ),
@@ -257,16 +273,23 @@ class ChecklistPage extends StatelessWidget {
                 // 1. BAGIAN CUCIAN AKTIF (FR-3.1)
                 Row(
                   children: [
-                    Icon(
-                      Icons.pending_actions_rounded,
-                      size: 20,
-                      color: Colors.orange.shade800,
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.pending_actions_rounded,
+                        size: 18,
+                        color: Colors.orange.shade800,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Cucian Aktif (Proses)',
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -328,16 +351,23 @@ class ChecklistPage extends StatelessWidget {
                 // 2. BAGIAN SELESAI (FR-3.3)
                 Row(
                   children: [
-                    Icon(
-                      Icons.check_circle_outline_rounded,
-                      size: 20,
-                      color: Colors.green.shade800,
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.successGreenBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: 18,
+                        color: AppTheme.successGreen,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Selesai',
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -347,15 +377,15 @@ class ChecklistPage extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.shade100,
+                        color: AppTheme.successGreen.withAlpha(25),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '${selesai.length}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green.shade900,
+                          color: AppTheme.successGreen,
                         ),
                       ),
                     ),
@@ -379,8 +409,9 @@ class ChecklistPage extends StatelessWidget {
                           key: ValueKey('complete-empty'),
                           icon: Icons.check_circle_outline_rounded,
                           title: 'Belum ada cucian selesai',
-                          subtitle: 'Cucian yang sudah ditandai selesai akan muncul di sini.',
-                          iconColor: Colors.green,
+                          subtitle:
+                              'Cucian yang sudah ditandai selesai akan muncul di sini.',
+                          iconColor: AppTheme.successGreen,
                         )
                       : Column(
                           key: ValueKey(

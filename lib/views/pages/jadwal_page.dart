@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/jadwal_laundry.dart';
+import '../../theme/app_theme.dart';
 import '../../utils/date_helper.dart';
 import '../../viewmodels/jadwal_vm.dart';
 import '../widgets/jadwal_card.dart';
@@ -70,7 +71,7 @@ class JadwalPage extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            Icon(Icons.warning_amber_rounded, color: AppTheme.urgentRed),
             SizedBox(width: 8),
             Text('Konfirmasi Hapus'),
           ],
@@ -117,10 +118,17 @@ class JadwalPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Jadwal Antar-Jemput'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add_rounded),
-            tooltip: 'Tambah Jadwal',
-            onPressed: () => _bukaFormJadwal(context),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton.filledTonal(
+              icon: const Icon(Icons.add_rounded, size: 20),
+              tooltip: 'Tambah Jadwal',
+              style: IconButton.styleFrom(
+                backgroundColor: AppTheme.primaryLight,
+                foregroundColor: AppTheme.primaryColor,
+              ),
+              onPressed: () => _bukaFormJadwal(context),
+            ),
           ),
         ],
       ),
@@ -169,7 +177,7 @@ class JadwalPage extends StatelessWidget {
             onRefresh: vm.refresh,
             child: Column(
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
                 // 1. FILTER SEGMENTED BUTTON (FR-2.1)
                 SingleChildScrollView(
@@ -249,26 +257,43 @@ class JadwalPage extends StatelessWidget {
                 // Info Jumlah Jadwal Terfilter
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                    horizontal: 16,
                     vertical: 4,
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        'Menampilkan ${list.length} jadwal',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.surfaceMuted,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'Menampilkan ${list.length} jadwal',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
                       if (vm.filterLayanan != null || vm.filterHari != 'Semua')
                         TextButton(
                           onPressed: () {
                             vm.setFilterLayanan(null);
                             vm.setFilterHari('Semua');
                           },
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            foregroundColor: AppTheme.primaryColor,
+                          ),
                           child: const Text('Reset Filter'),
                         ),
                     ],
@@ -287,7 +312,8 @@ class JadwalPage extends StatelessWidget {
                               child: EmptyStateWidget(
                                 icon: Icons.event_busy_rounded,
                                 title: 'Tidak ada jadwal ditemukan',
-                                subtitle: 'Belum ada jadwal yang cocok dengan filter yang dipilih.',
+                                subtitle:
+                                    'Belum ada jadwal yang cocok dengan filter yang dipilih.',
                                 actionLabel: 'Tambah Jadwal Baru',
                                 onAction: () => _bukaFormJadwal(context),
                               ),

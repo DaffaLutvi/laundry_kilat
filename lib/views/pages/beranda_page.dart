@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../theme/app_theme.dart';
 import '../../utils/date_helper.dart';
 import '../../viewmodels/beranda_vm.dart';
 import '../../viewmodels/pengaturan_vm.dart';
@@ -36,54 +37,97 @@ class BerandaPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 92,
+        toolbarHeight: 96,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '$sapaan, $namaUsaha',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
             Row(
               children: [
-                Icon(
-                  Icons.local_laundry_service_rounded,
-                  color: colorScheme.primary,
-                  size: 24,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    '$sapaan, $namaUsaha',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.local_laundry_service_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Laundry Kilat',
                   style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
                   ),
                 ),
               ],
             ),
-            Text(
-              DateHelper.getTanggalLengkap(DateTime.now()),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontSize: 10,
-              ),
+            const SizedBox(height: 2),
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today_rounded,
+                  size: 11,
+                  color: AppTheme.textSecondary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  DateHelper.getTanggalLengkap(DateTime.now()),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppTheme.textSecondary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded),
-            tooltip: 'Segarkan Data',
-            onPressed: () {
-              context.read<BerandaViewModel>().refresh();
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton.filledTonal(
+              icon: const Icon(Icons.refresh_rounded, size: 20),
+              tooltip: 'Segarkan Data',
+              style: IconButton.styleFrom(
+                backgroundColor: AppTheme.surfaceMuted,
+                foregroundColor: AppTheme.primaryColor,
+              ),
+              onPressed: () {
+                context.read<BerandaViewModel>().refresh();
+              },
+            ),
           ),
         ],
       ),
@@ -126,11 +170,11 @@ class BerandaPage extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: vm.refresh,
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               children: [
                 // 1. KARTU RINGKASAN SELESAI (FR-1.3)
                 _buildRingkasanCard(context, vm),
-                const SizedBox(height: 20),
+                const SizedBox(height: 22),
 
                 // 2. DAFTAR JADWAL HARI INI (FR-1.1)
                 _buildJadwalSection(context, vm),
@@ -150,153 +194,197 @@ class BerandaPage extends StatelessWidget {
   /// Widget Ringkasan Selesai (FR-1.3)
   Widget _buildRingkasanCard(BuildContext context, BerandaViewModel vm) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final progress = vm.persentaseSelesai;
     final persenInt = (progress * 100).toInt();
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primaryContainer,
-            colorScheme.primaryContainer.withAlpha(160),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.primary.withAlpha(60)),
+        gradient: AppTheme.ringkasanGradient,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: AppTheme.elevatedShadow,
       ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.task_alt_rounded,
-                  color: colorScheme.onPrimary,
-                  size: 20,
-                ),
+          // Aksen dekoratif lingkaran halus di pojok kanan atas
+          Positioned(
+            right: -25,
+            top: -25,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withAlpha(16),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          Positioned(
+            right: 40,
+            bottom: -35,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withAlpha(10),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      'Ringkasan Selesai Hari Ini',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      padding: const EdgeInsets.all(9),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(45),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.task_alt_rounded,
+                        color: Colors.white,
+                        size: 20,
                       ),
                     ),
-                    Text(
-                      vm.ringkasanSelesai,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onPrimaryContainer,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Ringkasan Selesai Hari Ini',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: Colors.white.withAlpha(220),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            vm.ringkasanSelesai,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(20),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        '$persenInt%',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                          color: AppTheme.primaryColor,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '$persenInt%',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.primary,
+                const SizedBox(height: 16),
+
+                // Progress Bar Elegan
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 10,
+                    backgroundColor: Colors.white.withAlpha(50),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
+                const SizedBox(height: 16),
 
-          // Progress Bar
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 10,
-              backgroundColor: colorScheme.surface.withAlpha(180),
-              valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                // Rincian Micro-stat Cards
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildGlassStatCard(
+                        icon: Icons.check_circle_rounded,
+                        label: '${vm.selesaiOrder} Selesai',
+                        color: const Color(0xFF6EE7B7),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildGlassStatCard(
+                        icon: Icons.pending_actions_rounded,
+                        label: '${vm.aktifOrder} Menunggu',
+                        color: const Color(0xFFFDE047),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildGlassStatCard(
+                        icon: Icons.inventory_2_rounded,
+                        label: '${vm.totalOrder} Total Order',
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-
-          // Rincian Singkat
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            children: [
-              _buildBadgeStat(
-                context,
-                icon: Icons.check_circle_outline_rounded,
-                label: '${vm.selesaiOrder} Selesai',
-                color: Colors.green.shade800,
-                bgColor: Colors.green.shade100,
-              ),
-              _buildBadgeStat(
-                context,
-                icon: Icons.pending_actions_rounded,
-                label: '${vm.aktifOrder} Menunggu',
-                color: Colors.orange.shade800,
-                bgColor: Colors.orange.shade100,
-              ),
-              _buildBadgeStat(
-                context,
-                icon: Icons.inventory_2_outlined,
-                label: '${vm.totalOrder} Total Order',
-                color: colorScheme.primary,
-                bgColor: colorScheme.surface,
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBadgeStat(
-    BuildContext context, {
+  Widget _buildGlassStatCard({
     required IconData icon,
     required String label,
     required Color color,
-    required Color bgColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white.withAlpha(30),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.white.withAlpha(40),
+          width: 1,
+        ),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: color,
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: Colors.white.withAlpha(240),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -315,12 +403,23 @@ class BerandaPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.schedule_rounded, size: 20, color: colorScheme.primary),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryLight,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.schedule_rounded,
+                size: 18,
+                color: AppTheme.primaryColor,
+              ),
+            ),
             const SizedBox(width: 8),
             Text(
               'Jadwal Hari Ini',
               style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: 8),
@@ -349,7 +448,7 @@ class BerandaPage extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
 
         if (list.isEmpty)
           const EmptyStateWidget(
@@ -382,16 +481,23 @@ class BerandaPage extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.local_laundry_service_rounded,
-                  size: 20,
-                  color: colorScheme.primary,
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.local_laundry_service_rounded,
+                    size: 18,
+                    color: AppTheme.primaryColor,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Pekerjaan Hari Ini',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -413,14 +519,14 @@ class BerandaPage extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           'Daftar cucian yang perlu diproses hari ini. Centang untuk menyelesaikan.',
           style: theme.textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
 
         if (list.isEmpty)
           const EmptyStateWidget(

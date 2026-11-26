@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../models/info_laundry.dart';
+import '../../theme/app_theme.dart';
 import '../../viewmodels/info_vm.dart';
 import '../widgets/info_card.dart';
 import '../widgets/info_form_sheet.dart';
@@ -99,10 +100,17 @@ class InfoPromoPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Info & Promo'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add_rounded),
-            tooltip: 'Tambah Info & Promo',
-            onPressed: () => _bukaFormInfo(context),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton.filledTonal(
+              icon: const Icon(Icons.add_rounded, size: 20),
+              tooltip: 'Tambah Info & Promo',
+              style: IconButton.styleFrom(
+                backgroundColor: AppTheme.primaryLight,
+                foregroundColor: AppTheme.primaryColor,
+              ),
+              onPressed: () => _bukaFormInfo(context),
+            ),
           ),
         ],
       ),
@@ -152,7 +160,7 @@ class InfoPromoPage extends StatelessWidget {
             onRefresh: vm.refresh,
             child: Column(
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
                 // 1. FILTER KATEGORI (FR-5.2)
                 SingleChildScrollView(
@@ -179,20 +187,35 @@ class InfoPromoPage extends StatelessWidget {
                 // Subtitle Info & Badge
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                    horizontal: 16,
                     vertical: 4,
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        'Menampilkan ${list.length} informasi',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.surfaceMuted,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'Menampilkan ${list.length} informasi',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.star_rounded,

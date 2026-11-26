@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/cucian_order.dart';
+import '../../theme/app_theme.dart';
 import '../../utils/date_helper.dart';
 
 /// Lapisan View: Formulir modal bottom sheet untuk mencatat CucianOrder baru.
@@ -66,7 +67,6 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final target = _targetSelesai;
     final jamEstimasi = _estimasiJam;
@@ -75,7 +75,7 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 20,
+        top: 12,
         bottom: bottomInset + 20,
       ),
       child: Form(
@@ -85,14 +85,35 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Drag Handle Modern
+              Center(
+                child: Container(
+                  width: 38,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                    color: AppTheme.outlineBorder,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+
               // Header
               Row(
                 children: [
-                  Icon(
-                    Icons.add_shopping_cart_rounded,
-                    color: colorScheme.primary,
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryLight,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.add_shopping_cart_rounded,
+                      color: AppTheme.primaryColor,
+                      size: 20,
+                    ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Catat Cucian Masuk',
@@ -205,10 +226,10 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: colorScheme.secondaryContainer.withAlpha(90),
+                  color: AppTheme.accentLight.withAlpha(120),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: colorScheme.secondary.withAlpha(60),
+                    color: AppTheme.accentColor.withAlpha(60),
                   ),
                 ),
                 child: Column(
@@ -222,18 +243,18 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.timer_outlined,
                               size: 18,
-                              color: colorScheme.secondary,
+                              color: AppTheme.accentColor,
                             ),
                             const SizedBox(width: 6),
-                            Text(
+                            const Text(
                               'Estimasi Selesai Otomatis',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: colorScheme.secondary,
+                                color: AppTheme.accentColor,
                               ),
                             ),
                           ],
@@ -244,15 +265,15 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: colorScheme.secondary,
+                            color: AppTheme.accentColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             '~${jamEstimasi.toStringAsFixed(0)} Jam',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: colorScheme.onSecondary,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -263,7 +284,7 @@ class _CucianFormSheetState extends State<CucianFormSheet> {
                       'Perkiraan selesai: ${DateHelper.getTanggalLengkap(target)} jam ${target.hour.toString().padLeft(2, '0')}:${target.minute.toString().padLeft(2, '0')} WIB',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: colorScheme.onSecondaryContainer,
+                        color: AppTheme.textPrimary,
                       ),
                     ),
                   ],
